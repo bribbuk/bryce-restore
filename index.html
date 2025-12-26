@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UNREGISTERED TEKU SLATE</title>
+
+<style>
+:root {
+  --bg: #262626;
+  --fg: #ffcc00;
+  --glow: #EBFA7A;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: monospace;
+  font-weight: 800;
+  letter-spacing: 0.05em;
+  overflow-x: hidden;
+}
+
+body {
+  font-size: 11px;
+}
+
+.crt {
+  position: relative;
+  min-height: 100vh;
+  animation: crtFlicker 0.14s infinite;
+}
+
+.crt::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: repeating-linear-gradient(
+    to bottom,
+    rgba(255,255,255,0.03) 0px,
+    rgba(255,255,255,0.03) 1px,
+    rgba(0,0,0,0) 2px
+  );
+  opacity: 0.25;
+  pointer-events: none;
+}
+
+.crt::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(circle at center,
+    rgba(255,255,255,0.05),
+    rgba(0,0,0,0.85)
+  );
+  opacity: 0.35;
+  pointer-events: none;
+}
+
+@keyframes crtFlicker {
+  0% { opacity: 0.96; }
+  50% { opacity: 1; }
+  100% { opacity: 0.97; }
+}
+
+/* --- Header --- */
+
+.header {
+  padding: 18px 20px 10px 20px;
+}
+
+.teku-header {
+  font-size: 0.8em;
+  letter-spacing: 0.22em;
+  opacity: 0.8;
+}
+
+.divider {
+  border: none;
+  border-bottom: 1px solid var(--fg);
+  opacity: 0.3;
+  margin: 10px 0;
+}
+
+.small {
+  font-size: 0.9em;
+  opacity: 0.75;
+}
+
+/* --- Window system --- */
+
+.windows {
+  position: relative;
+  padding: 10px;
+  min-height: 120vh;
+}
+
+.window {
+  position: relative;
+  border: 1px solid rgba(255,204,0,0.35);
+  box-shadow:
+    0 0 3px rgba(235,250,122,0.25),
+    inset 0 0 6px rgba(0,0,0,0.6);
+  padding: 8px;
+  margin-bottom: 14px;
+  background: rgba(38,38,38,0.55);
+}
+
+.window.offset-a { transform: translateX(6px); }
+.window.offset-b { transform: translateX(-4px); }
+.window.offset-c { transform: translateX(10px); }
+
+.window-header {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.75em;
+  letter-spacing: 0.15em;
+  opacity: 0.85;
+  margin-bottom: 6px;
+}
+
+.window-header span:last-child {
+  opacity: 0.6;
+}
+
+/* --- SVG placeholders --- */
+
+.waveform {
+  width: 100%;
+  height: 110px;
+  border: 1px solid rgba(255,204,0,0.2);
+  box-shadow: inset 0 0 6px rgba(0,0,0,0.6);
+}
+
+.waveform text {
+  font-size: 8px;
+  opacity: 0.5;
+}
+
+/* --- Readouts --- */
+
+.readout {
+  margin-top: 6px;
+  font-size: 0.8em;
+  letter-spacing: 0.1em;
+  opacity: 0.9;
+}
+
+.readout .line {
+  display: flex;
+  justify-content: space-between;
+}
+
+.readout .k { opacity: 0.7; }
+.readout .v { font-weight: 1000; }
+
+/* --- Typeout --- */
+
+.typeout {
+  margin: 16px 20px;
+  font-size: 1.1em;
+  white-space: nowrap;
+  overflow: hidden;
+  width: 0;
+  animation: typing 6s steps(60,end) infinite;
+}
+
+.typeout::after {
+  content: "▉";
+  margin-left: 4px;
+  animation: cursorBlink 0.8s step-end infinite;
+}
+
+@keyframes typing {
+  0% { width: 0; }
+  35% { width: 100%; }
+  85% { width: 100%; }
+  100% { width: 100%; opacity: 0; }
+}
+
+@keyframes cursorBlink {
+  0%,50% { opacity: 1; }
+  50%,100% { opacity: 0; }
+}
+
+/* --- Footer glitch --- */
+
+.footer {
+  padding: 20px;
+  font-size: 0.75em;
+  opacity: 0.7;
+}
+</style>
+</head>
+
+<body>
+<div class="crt">
+
+  <div class="header">
+    <div class="teku-header">UNREGISTERED TEKU SLATE</div>
+    <hr class="divider">
+    <div class="small">
+      LOCAL CACHE · FIELD MARSHAL C. BRYCE · SESSION UNSAVED
+    </div>
+  </div>
+
+  <div class="windows">
+
+    <!-- Window 1 -->
+    <div class="window offset-a">
+      <div class="window-header">
+        <span>ACOUSTIC NANITE TELEMETRY</span>
+        <span>Δt −00:12</span>
+      </div>
+
+      <!-- SVG PLACEHOLDER -->
+      <svg class="waveform" viewBox="0 0 300 100">
+        <rect width="300" height="100" fill="none"/>
+        <polyline
+          points="0,50 30,42 60,55 90,30 120,60 150,40 180,65 210,38 240,58 270,44 300,50"
+          fill="none"
+          stroke="#ffcc00"
+          stroke-width="1.2"
+          opacity="0.85"/>
+        <text x="6" y="92">[RAW SIGNAL · UNFILTERED]</text>
+      </svg>
+
+      <div class="readout">
+        <div class="line"><span class="k">INTENSITY</span><span class="v">±0.91</span></div>
+        <div class="line"><span class="k">HARMONIC</span><span class="v">UNKNOWN</span></div>
+      </div>
+    </div>
+
+    <!-- Window 2 -->
+    <div class="window offset-b">
+      <div class="window-header">
+        <span>REFERENCE MAP · CASSINI</span>
+        <span>ARCHIVAL</span>
+      </div>
+
+      <!-- SVG PLACEHOLDER -->
+      <svg class="waveform" viewBox="0 0 300 100">
+        <polyline
+          points="0,50 25,48 50,47 75,45 100,44 125,43 150,42 175,43 200,44 225,45 250,47 275,48 300,50"
+          fill="none"
+          stroke="#ffcc00"
+          stroke-width="1.1"
+          opacity="0.6"/>
+        <text x="6" y="92">[NORMALISED BACKGROUND]</text>
+      </svg>
+
+      <div class="readout">
+        <div class="line"><span class="k">MATCH</span><span class="v">—</span></div>
+        <div class="line"><span class="k">OFFSET</span><span class="v">ΔΦ?</span></div>
+      </div>
+    </div>
+
+    <!-- Window 3 -->
+    <div class="window offset-c">
+      <div class="window-header">
+        <span>OVERLAY · AUTO-CORRELATION</span>
+        <span>LIVE</span>
+      </div>
+
+      <!-- SVG PLACEHOLDER -->
+      <svg class="waveform" viewBox="0 0 300 100">
+        <polyline
+          points="0,50 30,42 60,55 90,30 120,60 150,40 180,65 210,38 240,58 270,44 300,50"
+          fill="none"
+          stroke="#ffcc00"
+          stroke-width="1.2"
+          opacity="0.9"/>
+        <polyline
+          points="0,50 25,48 50,47 75,45 100,44 125,43 150,42 175,43 200,44 225,45 250,47 275,48 300,50"
+          fill="none"
+          stroke="#EBFA7A"
+          stroke-width="1"
+          opacity="0.6"/>
+        <text x="6" y="92">[PHASE LOCK DETECTED]</text>
+      </svg>
+
+      <div class="readout">
+        <div class="line"><span class="k">LOCK</span><span class="v">PARTIAL</span></div>
+        <div class="line"><span class="k">ERROR</span><span class="v">NON-RANDOM</span></div>
+      </div>
+    </div>
+
+  </div>
+
+  <div class="typeout">▉ ▉ ▉ SIGNAL PERSISTENT</div>
+
+  <div class="footer">
+    NOTE: These patterns are not emergent.<br>
+    They are aligned.
+  </div>
+
+</div>
+</body>
+</html>
