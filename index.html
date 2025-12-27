@@ -1,346 +1,860 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width,initial-scale=1" />
-<title>UNREGISTERED TEKU SLATE · BRYCE</title>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>UNREGISTERED TEKU SLATE — BRYCE / MARS-9</title>
+
 <style>
   :root{
     --bg:#262626;
     --fg:#ffcc00;
     --glow:#EBFA7A;
-    --dim:rgba(255,204,0,0.25);
-    --dim2:rgba(235,250,122,0.12);
-    --winbg:rgba(12,12,12,0.22);
+    --ink:rgba(255,204,0,0.92);
+    --ink2:rgba(255,204,0,0.68);
+    --line:rgba(255,204,0,0.22);
+    --glass:rgba(38,38,38,0.55);
+    --glass2:rgba(38,38,38,0.30);
   }
-  html,body{margin:0;background:var(--bg);color:var(--fg);font-family:monospace;font-weight:800;letter-spacing:.05em;overflow-x:hidden}
-  .crt{position:relative;min-height:100vh;overflow:hidden;animation:crtFlicker .15s infinite}
+
+  html,body{height:100%;}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--fg);
+    font-family: monospace;
+    font-weight: 800;
+    letter-spacing: 0.05em;
+    text-shadow: 0 0 2px var(--glow);
+    overflow-x:hidden;
+  }
+
+  /* CRT shell */
+  .crt{
+    position:relative;
+    min-height:100vh;
+    width:100%;
+    overflow:hidden;
+    animation: crtFlicker 0.15s infinite;
+  }
   .crt::before{
-    content:"";position:absolute;inset:0;pointer-events:none;
-    background:repeating-linear-gradient(to bottom, rgba(255,255,255,.03) 0px, rgba(255,255,255,.03) 1px, rgba(0,0,0,0) 2px);
-    opacity:.25;mix-blend-mode:overlay;
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:repeating-linear-gradient(
+      to bottom,
+      rgba(255,255,255,0.03) 0px,
+      rgba(255,255,255,0.03) 1px,
+      rgba(0,0,0,0) 2px
+    );
+    opacity:0.25;
+    mix-blend-mode:overlay;
+    z-index:2;
   }
   .crt::after{
-    content:"";position:absolute;inset:0;pointer-events:none;
-    background:radial-gradient(circle at center, rgba(255,255,255,.05) 0%, rgba(0,0,0,.85) 100%);
-    opacity:.35;
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:radial-gradient(circle at center,
+      rgba(255,255,255,0.05) 0%,
+      rgba(0,0,0,0.85) 100%
+    );
+    opacity:0.30;
+    z-index:3;
   }
-  @keyframes crtFlicker{0%{opacity:.96}50%{opacity:1}100%{opacity:.97}}
-
-  .wrap{max-width:900px;margin:0 auto;padding:18px 14px 80px}
-  .teku-header{font-size:.85em;font-weight:900;letter-spacing:.22em;opacity:.85}
-  .divider{border:none;border-bottom:1px solid var(--fg);opacity:.28;margin:10px 0 14px}
-
-  .small{font-size:.92em;opacity:.75;line-height:1.25}
-  .micro{font-size:.68em;opacity:.70;letter-spacing:.08em;line-height:1.2}
-  .typeout{
-    display:block;overflow:hidden;white-space:nowrap;height:1.4em;
-    width:min(34ch,100%);font-size:1.05em;font-weight:700;
-    text-shadow:0 0 4px var(--glow);
-    animation:typing 6s steps(60,end) infinite;
-  }
-  .typeout::after{content:"▉";margin-left:4px;text-shadow:0 0 4px var(--glow);animation:cursorBlink .8s step-end infinite}
-  @keyframes typing{0%{width:0;opacity:1}40%{width:100%;opacity:1}90%{width:100%;opacity:1}100%{width:100%;opacity:0}}
-  @keyframes cursorBlink{0%,50%{opacity:1}50%,100%{opacity:0}}
-
-  /* “slate desktop” */
-  .desk{
-    margin-top:14px;
-    display:grid;
-    grid-template-columns: 1fr;
-    gap:10px;
-  }
-  @media (min-width:720px){
-    .desk{grid-template-columns: 1fr 1fr}
+  @keyframes crtFlicker{
+    0%{opacity:0.96;}
+    50%{opacity:1;}
+    100%{opacity:0.97;}
   }
 
-  .win{
-    border:1px solid var(--dim);
-    background:var(--winbg);
-    box-shadow:0 0 3px rgba(235,250,122,0.20);
+  /* Header band */
+  .top{
     position:relative;
-    overflow:hidden;
+    z-index:5;
+    padding:18px 16px 12px 16px;
   }
-  .bar{
-    display:flex;justify-content:space-between;align-items:baseline;gap:10px;
-    padding:8px 10px 6px;
-    border-bottom:1px solid rgba(255,204,0,0.18);
-    background:linear-gradient(to bottom, rgba(255,204,0,0.05), rgba(0,0,0,0));
-    user-select:none;
+  .teku-header{
+    font-size:0.85em;
+    font-weight:900;
+    letter-spacing:0.20em;
+    opacity:0.85;
   }
-  .title{
-    font-weight:1000;letter-spacing:.14em;font-size:.88em;opacity:.92;
-    text-shadow:0 0 3px rgba(235,250,122,0.20);
+  .divider{
+    border:none;
+    border-bottom:1px solid var(--fg);
+    opacity:0.25;
+    margin:10px 0 10px;
   }
-  .meta{font-size:.78em;opacity:.70;letter-spacing:.10em}
-  .body{padding:10px}
-  .pad{height:8px}
-
-  /* plot styling */
-  svg{width:100%;height:auto;display:block}
-  .axis{stroke:rgba(255,204,0,0.35);stroke-width:1}
-  .grid{stroke:rgba(255,204,0,0.12);stroke-width:1}
-  .curve{fill:none;stroke:var(--fg);stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-  .glow{filter:url(#tekugl)}
-
-  .read{
-    margin-top:8px;
-    padding:8px 10px;
-    border-top:1px solid rgba(255,204,0,0.18);
-    font-size:.82em;letter-spacing:.10em;opacity:.88;
-  }
-  .read .row{display:flex;justify-content:space-between;gap:10px;flex-wrap:wrap}
-  .k{opacity:.78}
-  .v{font-weight:1000}
-
-  .placeholder{
-    border:1px dashed rgba(255,204,0,0.22);
-    padding:14px 12px;
-    opacity:.80;
+  .small{
+    font-size:0.95em;
+    opacity:0.78;
+    margin:0;
     line-height:1.25;
   }
-
-  .warn{
-    margin-top:14px;
-    border-left:3px solid rgba(255,204,0,0.45);
-    padding-left:10px;
-    font-size:.92em;
-    opacity:.82;
+  .micro{
+    font-size:0.70em;
+    opacity:0.70;
+    letter-spacing:0.10em;
+    margin:10px 0 0 0;
+    white-space:pre;
   }
 
-  /* mobile tighten */
+  /* Slate area */
+  .slate{
+    position:relative;
+    z-index:5;
+    padding:10px 10px 40px;
+    min-height: calc(100vh - 160px);
+  }
+
+  /* “Disorganised windows” */
+  .win{
+    position:absolute;
+    left:12px;
+    top:12px;
+    width:min(92vw, 520px);
+    background:linear-gradient(180deg, rgba(38,38,38,0.74), rgba(38,38,38,0.50));
+    border:1px solid rgba(255,204,0,0.30);
+    box-shadow: 0 0 3px rgba(235,250,122,0.18);
+    backdrop-filter: blur(1px);
+    user-select:none;
+    touch-action:none;
+  }
+  .win .bar{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:10px;
+    padding:8px 10px 7px;
+    border-bottom:1px solid rgba(255,204,0,0.16);
+    letter-spacing:0.12em;
+    font-weight:1000;
+    font-size:0.85em;
+    opacity:0.92;
+    background:rgba(38,38,38,0.30);
+    cursor:grab;
+  }
+  .win .bar:active{cursor:grabbing;}
+  .win .meta{
+    font-size:0.75em;
+    opacity:0.72;
+    letter-spacing:0.10em;
+    white-space:nowrap;
+  }
+  .win .body{
+    padding:10px;
+  }
+
+  .readout{
+    font-size:0.88em;
+    letter-spacing:0.10em;
+    opacity:0.95;
+    border-top:1px solid rgba(255,204,0,0.12);
+    padding-top:8px;
+    margin-top:8px;
+  }
+  .line{
+    display:flex;
+    justify-content:space-between;
+    gap:10px;
+    margin:2px 0;
+    flex-wrap:wrap;
+  }
+  .k{opacity:0.80; min-width:12ch;}
+  .v{font-weight:1000;}
+
+  /* SVG plot frame */
+  .plot{
+    border:1px solid rgba(255,204,0,0.22);
+    box-shadow: 0 0 3px rgba(235,250,122,0.12);
+    padding:8px;
+  }
+  .plot svg{width:100%; height:auto; display:block;}
+
+  /* “Signal typing” */
+  .typeout{
+    display:block;
+    overflow:hidden;
+    white-space:nowrap;
+    height:1.4em;
+    width:min(36ch, 100%);
+    font-family: monospace;
+    font-size:1.0em;
+    font-weight:600;
+    letter-spacing:0.05em;
+    text-shadow:0 0 4px var(--glow);
+    animation: typing 6s steps(60,end) infinite;
+    opacity:0.95;
+    margin:10px 0 0;
+  }
+  .typeout::after{
+    content:"▉";
+    display:inline-block;
+    margin-left:4px;
+    color:var(--fg);
+    text-shadow:0 0 4px var(--glow);
+    animation: cursorBlink 0.8s step-end infinite;
+  }
+  @keyframes typing{
+    0%{width:0;opacity:1;}
+    40%{width:100%;opacity:1;}
+    90%{width:100%;opacity:1;}
+    95%{width:100%;opacity:0;}
+    100%{width:100%;opacity:0;}
+  }
+  @keyframes cursorBlink{0%,50%{opacity:1;}50%,100%{opacity:0;}}
+
+  /* Mobile sizing */
   @media (max-width:600px){
-    body{font-size:10px}
-    .wrap{padding:16px 12px 70px}
-    .title{font-size:.92em}
+    body{font-size:10px;}
+    .top{padding:16px 14px 10px;}
+    .small{font-size:1.05em;}
+    .micro{font-size:0.75em;}
+    .win{width:min(94vw, 540px);}
+    .win .bar{font-size:1.00em;}
+    .readout{font-size:0.98em;}
   }
 </style>
 </head>
+
 <body>
 <div class="crt">
-  <div class="wrap">
+  <div class="top">
     <div class="teku-header">UNREGISTERED TEKU SLATE</div>
     <hr class="divider">
+    <p class="small">LOCAL CACHE: MARS-9 / DEPTH: 14.2km / OWNER: F. M. CALLUM BRYCE (KIA)</p>
+    <p class="small">SESSION: <span id="sessionId"></span> &nbsp;|&nbsp; CLOCK: <span id="clock"></span></p>
 
-    <div class="small">
-      FILE: <b>BRYCE_CALLUM.FM</b> · LOCATION: <b>MARS-9</b> · STATUS: <b>TERMINATED</b><br>
-      SESSION: <b>CAS_SCOMPASS//LISTEN</b> · NOTES: <i>“terrifying fucking wailing”</i>
-    </div>
+    <p class="micro">
+░░████████╗███████╗██╗░░██╗██╗░░░██╗░░░░░░░░░░░░░░░
+░░╚══██╔══╝██╔════╝██║░██╔╝██║░░░██║░░MARS-9░░░░░░
+░░░░░██║░░░█████╗░░█████═╝░██║░░░██║░░RECOVERY░░░░
+░░░░░██║░░░██╔══╝░░██╔═██╗░██║░░░██║░░FAILED░░░░░░
+░░░░░██║░░░███████╗██║░╚██╗╚██████╔╝░░░░░░░░░░░░░
+░░░░░╚═╝░░░╚══════╝╚═╝░░╚═╝░╚═════╝░░SLATE DUMP░░░
+    </p>
+  </div>
 
-    <div class="pad"></div>
+  <div class="slate" id="slate">
 
-    <div class="micro">
-      ░░██╗███╗░░██╗████████╗███████╗██████╗░░░░░░██╗░░░██╗██╗██╗░░░░░<br>
-      ░░██║████╗░██║╚══██╔══╝██╔════╝██╔══██╗░░░░░██║░░░██║██║██║░░░░░<br>
-      ░░██║██╔██╗██║░░░██║░░░█████╗░░██████╔╝░░░░░██║░░░██║██║██║░░░░░<br>
-      ░░██║██║╚████║░░░██║░░░██╔══╝░░██╔══██╗░░░░░╚██╗░██╔╝██║██║░░░░░<br>
-      ░░██║██║░╚███║░░░██║░░░███████╗██║░░██║░░░░░░╚████╔╝░██║███████╗<br>
-      ░░╚═╝╚═╝░░╚══╝░░░╚═╝░░░╚══════╝╚═╝░░╚═╝░░░░░░░╚═══╝░░╚═╝╚══════╝
-    </div>
-
-    <div class="pad"></div>
-    <div class="typeout">▉ ▉ ▉ CHANNEL OPEN · SIGNAL ANOMALOUS</div>
-
-    <div class="warn">
-      <b>WARNING:</b> Telemetry windows out of sequence. Timestamp jitter detected.  
-      Operator tags mention <b>“Cassini’s Compass”</b> and a <b>non-Novex chain of custody</b>.
-    </div>
-
-    <div class="pad"></div>
-
-    <div class="desk">
-
-      <!-- Window: animated spectrum -->
-      <section class="win">
-        <div class="bar">
-          <div class="title">CASSINI COMPASS · Cℓ TRACE</div>
-          <div class="meta">τ-SWEEP · LIVE FIT</div>
-        </div>
-        <div class="body">
-          <svg viewBox="0 0 520 240" role="img" aria-label="CMB-like power spectrum animation">
+    <!-- WINDOW 1: “Cassini’s Compass” comparison -->
+    <section class="win" data-z="10" style="left:10px; top:16px; width:min(94vw,560px);">
+      <div class="bar">
+        <span>CASSINI’S COMPASS / MATCH TRACE</span>
+        <span class="meta">BUF: 9.6s · CH: 03 · GAIN: AUTO</span>
+      </div>
+      <div class="body">
+        <div class="plot">
+          <svg viewBox="0 0 520 160" role="img" aria-label="Match trace">
             <defs>
-              <filter id="tekugl" x="-0.6" y="-0.6" width="2.2" height="2.2" filterUnits="objectBoundingBox">
+              <!-- Isolated tight-glow filter (tekugl) -->
+              <filter id="tekugl" filterUnits="objectBoundingBox" x="-0.6" y="-0.6" width="2.2" height="2.2">
                 <feDropShadow dx="0" dy="0" stdDeviation="0.9" flood-color="#EBFA7A" flood-opacity="0.22"/>
-                <feDropShadow dx="0" dy="0" stdDeviation="1.6" flood-color="#ffcc00" flood-opacity="0.16"/>
+                <feDropShadow dx="0" dy="0" stdDeviation="1.6" flood-color="#ffcc00" flood-opacity="0.18"/>
               </filter>
             </defs>
 
             <!-- grid -->
-            <rect x="14" y="14" width="492" height="202" fill="rgba(0,0,0,0.16)" stroke="rgba(255,204,0,0.25)"/>
-            <g>
-              <!-- vertical grid -->
-              <line class="grid" x1="96" y1="14" x2="96" y2="216"/>
-              <line class="grid" x1="178" y1="14" x2="178" y2="216"/>
-              <line class="grid" x1="260" y1="14" x2="260" y2="216"/>
-              <line class="grid" x1="342" y1="14" x2="342" y2="216"/>
-              <line class="grid" x1="424" y1="14" x2="424" y2="216"/>
-              <!-- horizontal grid -->
-              <line class="grid" x1="14" y1="54" x2="506" y2="54"/>
-              <line class="grid" x1="14" y1="94" x2="506" y2="94"/>
-              <line class="grid" x1="14" y1="134" x2="506" y2="134"/>
-              <line class="grid" x1="14" y1="174" x2="506" y2="174"/>
+            <g opacity="0.22" stroke="#ffcc00" stroke-width="1">
+              <path d="M10 30 H510 M10 60 H510 M10 90 H510 M10 120 H510 M10 150 H510" fill="none"/>
+              <path d="M10 10 V150 M110 10 V150 M210 10 V150 M310 10 V150 M410 10 V150 M510 10 V150" fill="none"/>
             </g>
 
-            <!-- axes -->
-            <line class="axis" x1="14" y1="216" x2="506" y2="216"/>
-            <line class="axis" x1="14" y1="14" x2="14" y2="216"/>
+            <!-- axes labels -->
+            <text x="12" y="22" fill="#ffcc00" opacity="0.75" font-size="12" font-family="monospace" letter-spacing="0.10em">ΔΦ (norm)</text>
+            <text x="430" y="156" fill="#ffcc00" opacity="0.75" font-size="12" font-family="monospace" letter-spacing="0.10em">t</text>
 
-            <!-- curve -->
-            <path id="clPath" class="curve glow" d=""/>
+            <!-- animated trace -->
+            <path id="trace1" d="" fill="none" stroke="#ffcc00" stroke-width="2.0" opacity="0.88" filter="url(#tekugl)" stroke-linecap="round" stroke-linejoin="round"/>
+            <path id="trace1b" d="" fill="none" stroke="#ffcc00" stroke-width="6.0" opacity="0.10" filter="url(#tekugl)" stroke-linecap="round" stroke-linejoin="round"/>
           </svg>
         </div>
-        <div class="read">
-          <div class="row"><span class="k">PARAM</span><span class="v">τ = <span id="tauVal">0.07</span></span></div>
-          <div class="row"><span class="k">MODE</span><span class="v">ACOUSTIC + DAMPING</span></div>
-          <div class="row"><span class="k">NOTE</span><span class="v">SMALL-SCALE SUPPRESSION</span></div>
-        </div>
-      </section>
 
-      <!-- Window: waveform placeholder -->
-      <section class="win">
-        <div class="bar">
-          <div class="title">AUDIO/STRUCTURE · “WAIL” ENVELOPE</div>
-          <div class="meta">PLACEHOLDER</div>
+        <div class="readout">
+          <div class="line"><span class="k">STATUS</span><span class="v" id="mStatus">LOCKING…</span></div>
+          <div class="line"><span class="k">COHERENCE</span><span class="v" id="mCoh">0.000</span></div>
+          <div class="line"><span class="k">PHASE</span><span class="v" id="mPhase">—</span></div>
+          <div class="line"><span class="k">NOTE</span><span class="v">“terrifying fucking wailing”</span></div>
         </div>
-        <div class="body">
-          <div class="placeholder">
-            DROP-IN SLOT: <b>wail_waveform.svg</b><br><br>
-            (Replace this panel with your traced “nanite wail” waveform.)<br>
-            Suggested: long horizontal strip, oscillatory, noisy, with occasional spikes.
-          </div>
-        </div>
-      </section>
 
-      <!-- Window: CMB SVG placeholder -->
-      <section class="win">
-        <div class="bar">
-          <div class="title">SIGNATURE BANK · CMB MATCH</div>
-          <div class="meta">PLACEHOLDER</div>
-        </div>
-        <div class="body">
-          <div class="placeholder">
-            DROP-IN SLOT: <b>cmb_trace_A.svg</b> / <b>cmb_trace_B.svg</b><br><br>
-            Put your “Cassini’s Compass” templates here once you generate them.<br>
-            The animated panel at left is a <i>synthetic</i> τ-sweep version.
-          </div>
-        </div>
-      </section>
+        <div class="typeout">▉ ▉ ▉ ALIGNING AGAINST COMPASS SIGNATURE</div>
+      </div>
+    </section>
 
-      <!-- Window: log text -->
-      <section class="win">
-        <div class="bar">
-          <div class="title">OPERATOR NOTES · BRYCE</div>
-          <div class="meta">AUTO-RECOVER</div>
-        </div>
-        <div class="body">
-          <div class="micro" style="opacity:.78;line-height:1.35">
-            - “they’re not *screaming*, it’s like… a chorus through a radio telescope.”<br>
-            - “pattern repeats when you run the tape backwards.”<br>
-            - “Novex would bury this. Not their signal.”<br>
-            - “Cassini’s Compass flags it: same spacing as the old sky.”<br>
-            - “if this is what i think it is, we’re inside it.”<br>
-            <br>
-            # USER_bryce CALLED: match(THRALL_WAIL, Cℓ_LIBRARY)<br>
-            # USER_bryce RESULT: <b>NON-ZERO CORRELATION</b><br>
-            # USER_bryce STATUS: <b>NO EGRESS</b><br>
-          </div>
-        </div>
-      </section>
+    <!-- WINDOW 2: Acoustic peaks with damping (“power spectrum vibe”) -->
+    <section class="win" data-z="9" style="left:18px; top:320px; width:min(92vw,520px);">
+      <div class="bar">
+        <span>TEMP POWER / PEAKS + DAMPING</span>
+        <span class="meta">ℓ: 2→1400 · BIN: 12</span>
+      </div>
+      <div class="body">
+        <div class="plot">
+          <svg viewBox="0 0 520 160" role="img" aria-label="Acoustic peaks plot">
+            <defs>
+              <filter id="tekugl2" filterUnits="objectBoundingBox" x="-0.6" y="-0.6" width="2.2" height="2.2">
+                <feDropShadow dx="0" dy="0" stdDeviation="0.9" flood-color="#EBFA7A" flood-opacity="0.22"/>
+                <feDropShadow dx="0" dy="0" stdDeviation="1.6" flood-color="#ffcc00" flood-opacity="0.18"/>
+              </filter>
+            </defs>
 
-    </div>
+            <g opacity="0.22" stroke="#ffcc00" stroke-width="1">
+              <path d="M10 30 H510 M10 60 H510 M10 90 H510 M10 120 H510 M10 150 H510" fill="none"/>
+              <path d="M10 10 V150 M110 10 V150 M210 10 V150 M310 10 V150 M410 10 V150 M510 10 V150" fill="none"/>
+            </g>
+
+            <text x="12" y="22" fill="#ffcc00" opacity="0.75" font-size="12" font-family="monospace" letter-spacing="0.10em">Cℓ (arb)</text>
+            <text x="484" y="156" fill="#ffcc00" opacity="0.75" font-size="12" font-family="monospace" letter-spacing="0.10em">ℓ</text>
+
+            <path id="spec2" d="" fill="none" stroke="#ffcc00" stroke-width="2.0" opacity="0.86" filter="url(#tekugl2)" stroke-linecap="round" stroke-linejoin="round"/>
+            <path id="spec2b" d="" fill="none" stroke="#ffcc00" stroke-width="7.0" opacity="0.08" filter="url(#tekugl2)" stroke-linecap="round" stroke-linejoin="round"/>
+
+            <!-- damping envelope (faint) -->
+            <path id="damp2" d="" fill="none" stroke="#ffcc00" stroke-width="1.5" opacity="0.22" stroke-dasharray="3 6"/>
+          </svg>
+        </div>
+
+        <div class="readout">
+          <div class="line"><span class="k">PEAK 1</span><span class="v" id="p1">~200</span></div>
+          <div class="line"><span class="k">PEAK 2</span><span class="v" id="p2">~550</span></div>
+          <div class="line"><span class="k">DAMP</span><span class="v">small-scale drop-off</span></div>
+        </div>
+
+        <p class="small" style="margin:8px 0 0; opacity:0.75;">
+          NOTE: small-scale peaks damp as wavelengths dissipate (“below about 10× the mean free path scale”, stylised here as an exponential falloff). 3
+        </p>
+      </div>
+    </section>
+
+    <!-- WINDOW 3: Overtone stack (fundamental + harmonics) -->
+    <section class="win" data-z="8" style="left:36px; top:560px; width:min(90vw,480px);">
+      <div class="bar">
+        <span>OSCILLATION STACK / FUND + OVERTONES</span>
+        <span class="meta">MODE SET: 1–4</span>
+      </div>
+      <div class="body">
+        <div class="plot">
+          <svg viewBox="0 0 520 180" role="img" aria-label="Overtone stack">
+            <defs>
+              <filter id="tekugl3" filterUnits="objectBoundingBox" x="-0.6" y="-0.6" width="2.2" height="2.2">
+                <feDropShadow dx="0" dy="0" stdDeviation="0.9" flood-color="#EBFA7A" flood-opacity="0.22"/>
+                <feDropShadow dx="0" dy="0" stdDeviation="1.6" flood-color="#ffcc00" flood-opacity="0.18"/>
+              </filter>
+            </defs>
+
+            <g opacity="0.18" stroke="#ffcc00" stroke-width="1">
+              <path d="M10 30 H510 M10 60 H510 M10 90 H510 M10 120 H510 M10 150 H510 M10 170 H510" fill="none"/>
+              <path d="M10 10 V170 M110 10 V170 M210 10 V170 M310 10 V170 M410 10 V170 M510 10 V170" fill="none"/>
+            </g>
+
+            <text x="12" y="22" fill="#ffcc00" opacity="0.75" font-size="12" font-family="monospace" letter-spacing="0.10em">ΔT (phase)</text>
+
+            <path id="ov1" d="" fill="none" stroke="#ffcc00" stroke-width="2.0" opacity="0.80" filter="url(#tekugl3)" stroke-linecap="round"/>
+            <path id="ov2" d="" fill="none" stroke="#ffcc00" stroke-width="2.0" opacity="0.55" filter="url(#tekugl3)" stroke-linecap="round"/>
+            <path id="ov3" d="" fill="none" stroke="#ffcc00" stroke-width="2.0" opacity="0.35" filter="url(#tekugl3)" stroke-linecap="round"/>
+            <path id="ov4" d="" fill="none" stroke="#ffcc00" stroke-width="2.0" opacity="0.25" filter="url(#tekugl3)" stroke-linecap="round"/>
+
+            <text x="18" y="52" fill="#ffcc00" opacity="0.75" font-size="11" font-family="monospace" letter-spacing="0.10em">MODE 1</text>
+            <text x="18" y="92" fill="#ffcc00" opacity="0.65" font-size="11" font-family="monospace" letter-spacing="0.10em">MODE 2</text>
+            <text x="18" y="132" fill="#ffcc00" opacity="0.55" font-size="11" font-family="monospace" letter-spacing="0.10em">MODE 3</text>
+            <text x="18" y="168" fill="#ffcc00" opacity="0.50" font-size="11" font-family="monospace" letter-spacing="0.10em">MODE 4</text>
+          </svg>
+        </div>
+
+        <p class="small" style="margin:8px 0 0; opacity:0.75;">
+          This is the “pipe overtones” idea, but shown as synchronized time-oscillations (fundamental + harmonics). 4
+        </p>
+      </div>
+    </section>
+
+    <!-- WINDOW 4: Reionization scatter note + “fog” meter -->
+    <section class="win" data-z="7" style="left:220px; top:140px; width:min(86vw,420px);">
+      <div class="bar">
+        <span>POST-EMISSION SCATTER / FOG INDEX</span>
+        <span class="meta">LARGE-ANGLE POL</span>
+      </div>
+      <div class="body">
+        <div class="plot">
+          <svg viewBox="0 0 520 120" role="img" aria-label="Fog meter">
+            <defs>
+              <filter id="tekugl4" filterUnits="objectBoundingBox" x="-0.6" y="-0.6" width="2.2" height="2.2">
+                <feDropShadow dx="0" dy="0" stdDeviation="0.9" flood-color="#EBFA7A" flood-opacity="0.22"/>
+                <feDropShadow dx="0" dy="0" stdDeviation="1.6" flood-color="#ffcc00" flood-opacity="0.18"/>
+              </filter>
+            </defs>
+
+            <rect x="10" y="22" width="500" height="22" fill="none" stroke="#ffcc00" opacity="0.35"/>
+            <rect id="fogFill" x="10" y="22" width="60" height="22" fill="#ffcc00" opacity="0.55" filter="url(#tekugl4)"/>
+            <text x="12" y="16" fill="#ffcc00" opacity="0.8" font-size="12" font-family="monospace" letter-spacing="0.10em">SCATTERED FRACTION</text>
+
+            <g opacity="0.22" stroke="#ffcc00">
+              <path d="M10 70 H510" />
+              <path d="M10 92 H510" />
+            </g>
+
+            <path id="fogWiggle" d="" fill="none" stroke="#ffcc00" opacity="0.65" stroke-width="2" filter="url(#tekugl4)" stroke-linecap="round"/>
+          </svg>
+        </div>
+
+        <div class="readout">
+          <div class="line"><span class="k">INFERRED</span><span class="v" id="fogPct">17.0%</span></div>
+          <div class="line"><span class="k">INTERPRET</span><span class="v">EARLY REIONIZATION</span></div>
+          <div class="line"><span class="k">FLAG</span><span class="v">MODEL TENSION</span></div>
+        </div>
+
+        <p class="small" style="margin:8px 0 0; opacity:0.75;">
+          Inspired by the “~17% of CMB photons scattered by a thin fog of ionized gas” note. 5
+        </p>
+      </div>
+    </section>
+
+    <!-- WINDOW 5: YOUR PLACEHOLDER CMB SVG SLOT #1 -->
+    <section class="win" data-z="6" style="left:60px; top:820px; width:min(92vw,520px);">
+      <div class="bar">
+        <span>[PLACEHOLDER] CMB MAP / TT</span>
+        <span class="meta">DROP-IN: cmb_tt.svg</span>
+      </div>
+      <div class="body">
+        <div class="plot">
+          <svg viewBox="0 0 520 220" role="img" aria-label="CMB placeholder">
+            <defs>
+              <filter id="tekugl5" filterUnits="objectBoundingBox" x="-0.6" y="-0.6" width="2.2" height="2.2">
+                <feDropShadow dx="0" dy="0" stdDeviation="0.9" flood-color="#EBFA7A" flood-opacity="0.22"/>
+                <feDropShadow dx="0" dy="0" stdDeviation="1.6" flood-color="#ffcc00" flood-opacity="0.18"/>
+              </filter>
+            </defs>
+
+            <rect x="10" y="10" width="500" height="200" fill="none" stroke="#ffcc00" opacity="0.35"/>
+            <text x="18" y="44" fill="#ffcc00" opacity="0.85" font-size="14" font-family="monospace" letter-spacing="0.12em" filter="url(#tekugl5)">
+              INSERT YOUR SVG HERE
+            </text>
+            <text x="18" y="72" fill="#ffcc00" opacity="0.75" font-size="12" font-family="monospace" letter-spacing="0.10em">
+              Option A: replace this entire &lt;svg&gt; with &lt;img src="cmb_tt.svg"&gt;
+            </text>
+            <text x="18" y="92" fill="#ffcc00" opacity="0.75" font-size="12" font-family="monospace" letter-spacing="0.10em">
+              Option B: inline your CMB SVG markup right here
+            </text>
+
+            <!-- faux “noise map” so it isn’t empty -->
+            <g id="noiseDots" opacity="0.45" fill="#ffcc00"></g>
+          </svg>
+        </div>
+      </div>
+    </section>
+
+    <!-- WINDOW 6: YOUR PLACEHOLDER CMB SVG SLOT #2 -->
+    <section class="win" data-z="5" style="left:140px; top:1040px; width:min(88vw,460px);">
+      <div class="bar">
+        <span>[PLACEHOLDER] CMB / COMPASS TEMPLATE</span>
+        <span class="meta">DROP-IN: cmb_compass.svg</span>
+      </div>
+      <div class="body">
+        <div class="plot">
+          <svg viewBox="0 0 520 160" role="img" aria-label="Compass template placeholder">
+            <defs>
+              <filter id="tekugl6" filterUnits="objectBoundingBox" x="-0.6" y="-0.6" width="2.2" height="2.2">
+                <feDropShadow dx="0" dy="0" stdDeviation="0.9" flood-color="#EBFA7A" flood-opacity="0.22"/>
+                <feDropShadow dx="0" dy="0" stdDeviation="1.6" flood-color="#ffcc00" flood-opacity="0.18"/>
+              </filter>
+            </defs>
+
+            <g opacity="0.22" stroke="#ffcc00" stroke-width="1">
+              <path d="M10 30 H510 M10 60 H510 M10 90 H510 M10 120 H510 M10 150 H510" fill="none"/>
+              <path d="M10 10 V150 M110 10 V150 M210 10 V150 M310 10 V150 M410 10 V150 M510 10 V150" fill="none"/>
+            </g>
+
+            <text x="14" y="22" fill="#ffcc00" opacity="0.80" font-size="12" font-family="monospace" letter-spacing="0.12em">CMB-DERIVED WAVEFORM SLOT</text>
+            <path id="slotWave" d="" fill="none" stroke="#ffcc00" stroke-width="2" opacity="0.65" filter="url(#tekugl6)" stroke-linecap="round"/>
+          </svg>
+        </div>
+
+        <div class="readout">
+          <div class="line"><span class="k">ACTION</span><span class="v">REPLACE slotWave PATH</span></div>
+          <div class="line"><span class="k">WITH</span><span class="v">YOUR CMB SVG TRACE(S)</span></div>
+        </div>
+      </div>
+    </section>
+
   </div>
 </div>
 
 <script>
-/*
-  Synthetic “CMB-like” power spectrum:
-  - sum of gaussian peaks (acoustic harmonics)
-  - baseline tilt
-  - Silk damping at high-l
-  - tau (optical depth) suppresses small scales more strongly
-
-  This matches the qualitative description in Hu & White:
-  peaks + damping, plus reionization scattering implications (τ). 2
-*/
 (() => {
-  const path = document.getElementById("clPath");
-  const tauEl = document.getElementById("tauVal");
+  "use strict";
 
-  const W = 520, H = 240;
-  const plot = { x0:14, y0:14, w:492, h:202 };
+  // -----------------------------
+  // Ambient header (session + clock)
+  // -----------------------------
+  const sessionId = document.getElementById("sessionId");
+  const clockEl = document.getElementById("clock");
+  function hex(n){ return Math.floor(n).toString(16).toUpperCase().padStart(2,"0"); }
+  sessionId.textContent = `0x${hex(Math.random()*255)}${hex(Math.random()*255)}-${hex(Math.random()*255)}${hex(Math.random()*255)}-${hex(Math.random()*255)}${hex(Math.random()*255)}`;
 
-  // “l” domain and amplitude domain (arbitrary units for a prop)
-  const lMin = 2, lMax = 1200;
-  const n = 260;
+  function tickClock(){
+    const d = new Date();
+    const hh = String(d.getHours()).padStart(2,"0");
+    const mm = String(d.getMinutes()).padStart(2,"0");
+    const ss = String(d.getSeconds()).padStart(2,"0");
+    clockEl.textContent = `${hh}:${mm}:${ss}`;
+  }
+  tickClock();
+  setInterval(tickClock, 250);
 
-  function gauss(x, mu, sig){ const z = (x-mu)/sig; return Math.exp(-0.5*z*z); }
+  // -----------------------------
+  // Window drag + focus (mobile friendly)
+  // -----------------------------
+  const slate = document.getElementById("slate");
+  const wins = Array.from(slate.querySelectorAll(".win"));
 
-  // Base peaks roughly in the right places (visual, not a CAMB output)
-  const peaks = [
-    { mu: 220,  sig: 55,  amp: 1.00 },
-    { mu: 540,  sig: 70,  amp: 0.62 },
-    { mu: 800,  sig: 85,  amp: 0.42 },
-    { mu: 1050, sig: 95,  amp: 0.28 },
-  ];
-
-  function modelCl(l, tau){
-    // baseline tilt (gently decreases with l)
-    const tilt = 0.18 + 0.85 * Math.pow(l/220, -0.25);
-
-    // acoustic peaks
-    let p = 0;
-    for(const pk of peaks) p += pk.amp * gauss(l, pk.mu, pk.sig);
-
-    // “Silk damping” (kills small scales / high-l)
-    const ld = 1050;         // damping scale
-    const silk = Math.exp(-Math.pow(l/ld, 1.35));
-
-    // tau suppression: strong at high-l, weak at low-l
-    const tauCut = 130; // transition multipole
-    const smallScaleWeight = 1 - Math.exp(-Math.pow(l/tauCut, 1.2));
-    const tauSupp = Math.exp(-2 * tau * smallScaleWeight);
-
-    // combine
-    return (tilt + 1.15*p) * silk * tauSupp;
+  let topZ = 20;
+  function bringToFront(win){
+    topZ++;
+    win.style.zIndex = String(topZ);
   }
 
-  function makePath(tau){
-    let d = "";
-    // find max for scaling
-    let maxV = 0;
-    const vals = [];
-    for(let i=0;i<n;i++){
-      const t = i/(n-1);
-      const l = lMin + t*(lMax - lMin);
-      const v = modelCl(l, tau);
-      vals.push({t,l,v});
-      if(v>maxV) maxV=v;
-    }
-    maxV *= 1.06;
+  for(const w of wins){
+    const bar = w.querySelector(".bar");
+    let dragging = false;
+    let pid = null;
+    let start = null;
+    let startPos = null;
 
-    for(let i=0;i<vals.length;i++){
-      const {t,v} = vals[i];
-      const x = plot.x0 + t*plot.w;
-      const y = plot.y0 + plot.h * (1 - (v/maxV));
-      d += (i===0 ? `M ${x.toFixed(2)} ${y.toFixed(2)}` : ` L ${x.toFixed(2)} ${y.toFixed(2)}`);
+    // Tap anywhere => front
+    w.addEventListener("pointerdown", () => bringToFront(w), {passive:true});
+
+    bar.addEventListener("pointerdown", (e) => {
+      bringToFront(w);
+      dragging = true;
+      pid = e.pointerId;
+      bar.setPointerCapture(pid);
+
+      const rect = w.getBoundingClientRect();
+      start = { x: e.clientX, y: e.clientY };
+      startPos = { left: rect.left + window.scrollX, top: rect.top + window.scrollY };
+
+      e.preventDefault();
+    }, {passive:false});
+
+    bar.addEventListener("pointermove", (e) => {
+      if(!dragging || e.pointerId !== pid) return;
+
+      const dx = e.clientX - start.x;
+      const dy = e.clientY - start.y;
+
+      let newL = startPos.left + dx;
+      let newT = startPos.top + dy;
+
+      // keep roughly onscreen
+      const pad = 6;
+      const maxL = window.scrollX + window.innerWidth  - pad;
+      const maxT = window.scrollY + window.innerHeight - pad;
+
+      newL = Math.max(window.scrollX + pad, Math.min(newL, maxL));
+      newT = Math.max(window.scrollY + pad, Math.min(newT, maxT));
+
+      w.style.left = `${newL - window.scrollX}px`;
+      w.style.top  = `${newT - window.scrollY}px`;
+    }, {passive:true});
+
+    function endDrag(e){
+      if(!dragging || e.pointerId !== pid) return;
+      dragging = false;
+      try { bar.releasePointerCapture(pid); } catch(_){}
+      pid = null;
+    }
+    bar.addEventListener("pointerup", endDrag, {passive:true});
+    bar.addEventListener("pointercancel", endDrag, {passive:true});
+  }
+
+  // -----------------------------
+  // Utility: build smooth path from samples
+  // -----------------------------
+  function clamp(x,a,b){ return Math.max(a, Math.min(b,x)); }
+  function lerp(a,b,t){ return a + (b-a)*t; }
+
+  function catmullRomPath(points){
+    // points: [{x,y},...]
+    if(points.length < 2) return "";
+    let d = `M ${points[0].x.toFixed(2)} ${points[0].y.toFixed(2)}`;
+    for(let i=0;i<points.length-1;i++){
+      const p0 = points[i-1] || points[i];
+      const p1 = points[i];
+      const p2 = points[i+1];
+      const p3 = points[i+2] || p2;
+
+      const t = 0.6;
+      const c1x = p1.x + (p2.x - p0.x) * t / 6;
+      const c1y = p1.y + (p2.y - p0.y) * t / 6;
+      const c2x = p2.x - (p3.x - p1.x) * t / 6;
+      const c2y = p2.y - (p3.y - p1.y) * t / 6;
+
+      d += ` C ${c1x.toFixed(2)} ${c1y.toFixed(2)}, ${c2x.toFixed(2)} ${c2y.toFixed(2)}, ${p2.x.toFixed(2)} ${p2.y.toFixed(2)}`;
     }
     return d;
   }
 
-  // Animate tau between two plausible values
+  // -----------------------------
+  // 1) “Cassini’s Compass” match trace (creepy waveform)
+  // -----------------------------
+  const trace1 = document.getElementById("trace1");
+  const trace1b = document.getElementById("trace1b");
+  const mStatus = document.getElementById("mStatus");
+  const mCoh = document.getElementById("mCoh");
+  const mPhase = document.getElementById("mPhase");
+
   let t0 = performance.now();
-  function tick(now){
-    const dt = (now - t0) / 1000;
-    // smooth oscillation 0..1
-    const u = 0.5 - 0.5*Math.cos(dt * (Math.PI*2/6.5)); // 6.5s cycle
-    const tau = 0.03 + u * (0.18 - 0.03); // 0.03..0.18
+  function wailSample(t){
+    // A quasi-periodic “wail”: beating + slow phase drift + sudden spikes
+    const a = Math.sin(t*1.6) * 0.55;
+    const b = Math.sin(t*3.9 + Math.sin(t*0.35)*2.1) * 0.25;
+    const c = Math.sin(t*9.5 + 0.7) * 0.12;
+    const beat = a + b + c;
 
-    path.setAttribute("d", makePath(tau));
-    tauEl.textContent = tau.toFixed(2);
-
-    requestAnimationFrame(tick);
+    const spike = Math.max(0, Math.sin(t*0.9 - 1.2)) ** 8; // rare “screams”
+    return beat + spike * 0.85;
   }
-  requestAnimationFrame(tick);
+
+  function renderTrace1(now){
+    const tt = (now - t0) / 1000;
+    const pts = [];
+    const x0 = 10, x1 = 510;
+    const yMid = 86;
+
+    for(let i=0;i<=220;i++){
+      const u = i/220;
+      const x = lerp(x0, x1, u);
+
+      // time scroll
+      const s = wailSample(tt*0.9 + u*7.0);
+
+      // subtle noise
+      const n = (Math.sin((u*200 + tt*40)*0.22) + Math.sin((u*200 + tt*21)*0.51)) * 0.03;
+      const y = yMid - (s + n) * 46;
+
+      pts.push({x, y: clamp(y, 14, 148)});
+    }
+
+    const d = catmullRomPath(pts);
+    trace1.setAttribute("d", d);
+    trace1b.setAttribute("d", d);
+
+    // Faux coherence meter that “locks”
+    const coh = clamp(0.12 + 0.55*(0.5 + 0.5*Math.sin(tt*0.45)) + 0.25*Math.max(0, Math.sin(tt*0.18-0.9)), 0, 0.99);
+    mCoh.textContent = coh.toFixed(3);
+
+    const phase = ((tt*36) % 360);
+    mPhase.textContent = `${phase.toFixed(1)}°`;
+
+    if(coh < 0.55) mStatus.textContent = "SEARCHING…";
+    else if(coh < 0.80) mStatus.textContent = "LOCKING…";
+    else mStatus.textContent = "MATCH FOUND";
+
+    requestAnimationFrame(renderTrace1);
+  }
+  requestAnimationFrame(renderTrace1);
+
+  // -----------------------------
+  // 2) Acoustic peaks + damping (stylised spectrum)
+  // -----------------------------
+  const spec2 = document.getElementById("spec2");
+  const spec2b = document.getElementById("spec2b");
+  const damp2 = document.getElementById("damp2");
+
+  function gauss(x, mu, sig){ const z=(x-mu)/sig; return Math.exp(-0.5*z*z); }
+
+  function renderSpectrum(now){
+    const tt = (now - t0)/1000;
+
+    const x0 = 10, x1 = 510;
+    const y0 = 150, yTop = 16;
+
+    const pts = [];
+    const envPts = [];
+
+    // Damping envelope: exp(-(ℓ/ℓd)^p)
+    const ld = 950 + 50*Math.sin(tt*0.25);
+    const p = 1.8;
+
+    for(let i=0;i<=240;i++){
+      const u = i/240;
+      const ell = lerp(2, 1400, u);
+
+      const env = Math.exp(-Math.pow(ell/ld, p));
+
+      // Peaks: fundamental + overtones (stylised)
+      const pk =
+        1.30*gauss(ell, 200, 70) +
+        0.92*gauss(ell, 550, 85) +
+        0.74*gauss(ell, 800, 95) +
+        0.55*gauss(ell, 1100, 120);
+
+      // Gravity modulation “wiggle”
+      const wig = 1.0 + 0.05*Math.sin(ell*0.020 + tt*0.8) + 0.03*Math.sin(ell*0.011 - tt*0.6);
+
+      // Combine
+      let cl = (0.14 + pk) * env * wig;
+
+      // A tiny low-ℓ bump / ISW-ish swell (stylised only)
+      cl += 0.10*gauss(ell, 40, 28);
+
+      // Map to plot y
+      const y = y0 - clamp(cl, 0, 1.6) / 1.6 * (y0 - yTop);
+
+      const x = lerp(x0, x1, u);
+      pts.push({x, y});
+
+      // Envelope line
+      const envY = y0 - env * (y0 - yTop) * 0.70;
+      envPts.push({x, y: envY});
+    }
+
+    const d = catmullRomPath(pts);
+    spec2.setAttribute("d", d);
+    spec2b.setAttribute("d", d);
+
+    damp2.setAttribute("d", catmullRomPath(envPts));
+
+    requestAnimationFrame(renderSpectrum);
+  }
+  requestAnimationFrame(renderSpectrum);
+
+  // -----------------------------
+  // 3) Overtone stack (4 lanes)
+  // -----------------------------
+  const ov1 = document.getElementById("ov1");
+  const ov2 = document.getElementById("ov2");
+  const ov3 = document.getElementById("ov3");
+  const ov4 = document.getElementById("ov4");
+
+  function lanePath(now, freq, yBase, amp){
+    const tt = (now - t0)/1000;
+    const pts = [];
+    const x0=10, x1=510;
+    for(let i=0;i<=220;i++){
+      const u=i/220;
+      const x=lerp(x0,x1,u);
+      const phase = tt*freq + u*freq*2.3;
+      const s = Math.sin(phase) * amp + 0.15*Math.sin(phase*0.35 + tt*0.2);
+      const y = yBase - s*18;
+      pts.push({x, y});
+    }
+    return catmullRomPath(pts);
+  }
+
+  function renderOvertones(now){
+    ov1.setAttribute("d", lanePath(now, 2.2, 52, 1.0));
+    ov2.setAttribute("d", lanePath(now, 4.4, 92, 0.85));
+    ov3.setAttribute("d", lanePath(now, 6.6, 132, 0.72));
+    ov4.setAttribute("d", lanePath(now, 8.8, 168, 0.60));
+    requestAnimationFrame(renderOvertones);
+  }
+  requestAnimationFrame(renderOvertones);
+
+  // -----------------------------
+  // 4) Fog meter + wiggle
+  // -----------------------------
+  const fogFill = document.getElementById("fogFill");
+  const fogPct = document.getElementById("fogPct");
+  const fogWiggle = document.getElementById("fogWiggle");
+
+  function renderFog(now){
+    const tt = (now - t0)/1000;
+
+    // Keep it centered around ~17% but with “instrument jitter”
+    const pct = 0.17 + 0.015*Math.sin(tt*0.55) + 0.008*Math.sin(tt*1.4 + 0.7);
+    const p = clamp(pct, 0.05, 0.35);
+
+    fogFill.setAttribute("width", String(500 * p));
+    fogPct.textContent = `${(p*100).toFixed(1)}%`;
+
+    // wiggle line
+    const pts = [];
+    const x0=10, x1=510;
+    const yMid=92;
+    for(let i=0;i<=200;i++){
+      const u=i/200;
+      const x=lerp(x0,x1,u);
+      const s = Math.sin(tt*1.0 + u*9.0) * 0.55 + Math.sin(tt*0.35 + u*3.1) * 0.35;
+      const y=yMid - s*10;
+      pts.push({x,y});
+    }
+    fogWiggle.setAttribute("d", catmullRomPath(pts));
+
+    requestAnimationFrame(renderFog);
+  }
+  requestAnimationFrame(renderFog);
+
+  // -----------------------------
+  // 5) Placeholder noise map dots (so it looks “alive”)
+  // -----------------------------
+  const noiseDots = document.getElementById("noiseDots");
+  function seedNoise(){
+    // deterministic-ish scatter
+    const dots = [];
+    let s = 1337;
+    function rnd(){
+      s = (s*1664525 + 1013904223) >>> 0;
+      return (s & 0xFFFFFF) / 0xFFFFFF;
+    }
+    for(let i=0;i<520;i++){
+      const x = 18 + rnd()*484;
+      const y = 18 + rnd()*184;
+      const r = 0.5 + rnd()*1.6;
+      const op = 0.10 + rnd()*0.25;
+      dots.push(`<circle cx="${x.toFixed(2)}" cy="${y.toFixed(2)}" r="${r.toFixed(2)}" opacity="${op.toFixed(3)}"></circle>`);
+    }
+    noiseDots.innerHTML = dots.join("");
+  }
+  seedNoise();
+
+  // -----------------------------
+  // 6) Slot wave (placeholder waveform in Window 6)
+  // -----------------------------
+  const slotWave = document.getElementById("slotWave");
+  function renderSlot(now){
+    const tt = (now - t0)/1000;
+    const pts = [];
+    const x0=10, x1=510;
+    const yMid=90;
+    for(let i=0;i<=220;i++){
+      const u=i/220;
+      const x=lerp(x0,x1,u);
+      const s = Math.sin(tt*1.2 + u*10.0) * 0.6 + Math.sin(tt*0.3 + u*2.0) * 0.25;
+      const y=yMid - s*34;
+      pts.push({x,y:clamp(y,14,148)});
+    }
+    slotWave.setAttribute("d", catmullRomPath(pts));
+    requestAnimationFrame(renderSlot);
+  }
+  requestAnimationFrame(renderSlot);
+
+  // -----------------------------
+  // Initial “messy” offsets (so it feels like a slate dump)
+  // -----------------------------
+  // On very small screens, keep windows within reach.
+  function nudgeForSmall(){
+    if(window.innerWidth > 600) return;
+
+    const ordered = Array.from(document.querySelectorAll(".win"));
+    let y = 14;
+    for(const w of ordered){
+      const rect = w.getBoundingClientRect();
+      const h = rect.height || 260;
+
+      // keep some overlap, but not total chaos
+      const x = 8 + (Math.random()*24);
+      w.style.left = `${x}px`;
+      w.style.top = `${y}px`;
+
+      y += Math.max(160, h * 0.55);
+    }
+    // add bottom padding space
+    slate.style.minHeight = `${y + 220}px`;
+  }
+  setTimeout(nudgeForSmall, 0);
+
 })();
 </script>
 </body>
